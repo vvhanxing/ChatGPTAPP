@@ -65,6 +65,7 @@ var createBubble = function(input) {
 
   //checkInput(input);
   putJson(input)
+  hasCorrectInput = true;
 }
 
 var checkInput = function(input) {
@@ -99,7 +100,7 @@ var checkInput = function(input) {
   if(hasCorrectInput == false){
     console.log("ChatGPT API succes");
     ChatGPTCommand(BOTCommReaction);
-    hasCorrectInput = true;
+    
   }
 }
 
@@ -114,13 +115,15 @@ function putJson(input){
   request.open("POST", url,true);
   request.setRequestHeader("Content-Type", "application/json");
   
-  
+  textInput.value = "";// reset text area input
   request.onload = function (e) {
     if (request.readyState === 4) {
       if (request.status === 200) {
       console.log(request.responseText);
       BOTCommReaction = request.responseText
       checkInput(input);
+      
+      
       } else {
       console.error(request.statusText);
       }
@@ -254,30 +257,30 @@ function commandReset(e){
 
 var possibleInput = {
   // "hlep" : this.help(),
-  "help" : function(){
-    responseText("You can type a command in the chatbox")
-    responseText("Something like &quot;ChatGPT, please show me about; best work&quot;")
-    responseText("Did you find a bug or problem? Email me @VV")
-    commandReset(0);
-    return
-    },
-  "about" : function(){
-    responseText("This is me, ChatGPT's maker.");
-    responseText("Would you like to know about VV' vision? (Yes/No)");
-    commandReset(2);
-    return
-    },
-  "contact" : function(){
-    responseText("email: <a href='vv@gmail.com?Subject=Hello%20Mees' target='_top'>send me a message</a>");
-    commandReset(7);
-    return
-  },
-  "commands" : function(){
-    responseText("This is a list of commands ChatGPT knows:")
-    responseText("help, about, vision, contact, rick roll");
-    commandReset(8);
-    return
-  },
+  // "help" : function(){
+  //   responseText("You can type a command in the chatbox")
+  //   responseText("Something like &quot;ChatGPT, please show me about; best work&quot;")
+  //   responseText("Did you find a bug or problem? Email me @VV")
+  //   commandReset(0);
+  //   return
+  //   },
+  // "about" : function(){
+  //   responseText("This is me, ChatGPT's maker.");
+  //   responseText("Would you like to know about VV' vision? (Yes/No)");
+  //   commandReset(2);
+  //   return
+  //   },
+  // "contact" : function(){
+  //   responseText("email: <a href='vv@gmail.com?Subject=Hello%20Mees' target='_top'>send me a message</a>");
+  //   commandReset(7);
+  //   return
+  // },
+  // "commands" : function(){
+  //   responseText("This is a list of commands ChatGPT knows:")
+  //   responseText("help, about, vision, contact, rick roll");
+  //   commandReset(8);
+  //   return
+  // },
   "rick roll" : function(){
     window.location.href = "https://www.youtube.com/watch?v=MIcy-yhwIAo&t=18s"
     },
