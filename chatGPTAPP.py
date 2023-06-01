@@ -6,7 +6,10 @@ import json
 import getGPTAPI 
 # from baidu import  getbdaudio
 import getAudio
+import speak
+import voice2text
 import wave
+import requests
 app = Flask(__name__)
 
 @app.route("/hello",methods = ["GET","POST"])
@@ -28,7 +31,7 @@ def openai():
     gptResponse = getGPTAPI.chat_response(message)["content"]
     print(gptResponse)
     #getbdaudio.read_text(gptResponse,1,'audio')
-    getAudio.text2voice(gptResponse)
+    #getAudio.text2voice(gptResponse)
     print("return string")
     return  gptResponse.replace("\n","<br>")  
 
@@ -38,36 +41,45 @@ def stream_mp3():
     return send_file(audio_file, mimetype='audio/mpeg')
 
 
-@app.route('/upload', methods=['POST',"PUT"])
-def upload():
-    # audio_data = request.get_data()
-    # print(audio_data)
-    # #保存音频数据到WAV文件
-    # with wave.open("audio.wav", "wb") as wav_file:
-    #     wav_file.setnchannels(1)
-    #     wav_file.setsampwidth(2)
-    #     wav_file.setframerate(44100)
-    #     wav_file.writeframes(audio_data)
+@app.route('/file')
+def stream_file():
+    audio_file = 'static\\record_voice.py'
+    return send_file(audio_file, mimetype='audio/mpeg')
 
-    
-    # with open('recorded_audio.wav', 'wb') as file:
-    #     file.write(audio_data)
-    # return 'Audio recorded and saved successfully'
+
+@app.route('/esp32upload', methods=['POST',"PUT"])
+def esp32upload():
+
 
     data  =request.data
     print(data)
-    file_path = "received.wav"
+    file_path = "static\\received.wav"
     with open(file_path, 'wb') as file:
         file.write(data)
-    # if 'file' not in request.files:
-    #     return 'No file uploaded'
-    
-    # file = request.files['file']
-    # if file.filename == '':
-    #     return 'No file selected'
-    
-    # file.save('received.wav')
-    return 'File uploaded successfully'
+
+@app.route('/upload', methods=['POST',"PUT"])
+def upload():
+
+
+    data  =request.data
+    print(data)
+    print(">>>>>>>>>>>>1")
+    file_path = "static\\received.wav"
+    file = request.files['file']
+    print(">>>>>>>>>>>>2")
+    file.save(file_path)
+    print(">>>>>>>>>>>>3")
+    converted_text = speak.recognize_from_voice(file_path)
+    print(">>>>>>>>>>>>4")
+    print("-------------",converted_text)
+    url = "http://192.168.43.185:5000/openai/"
+    headers = {"Content-Type":"application/json"}
+    response = requests.post(url = url,headers=headers,json = {"content":[converted_text]})#询问GPT
+    gptResponseText = response.text
+    print(gptResponseText)
+    audio_file = getAudio.text2voice(gptResponseText)
+    print(audio_file)
+    return send_file(audio_file, mimetype='audio/mpeg')
 
    
 

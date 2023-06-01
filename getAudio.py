@@ -55,6 +55,7 @@ def text2voice(text):
             if cancellation_details.error_details:
                 print("Error details: {}".format(cancellation_details.error_details))
                 print("Did you set the speech resource key and region values?")
+    return audio_file
 if __name__ == "__main__":
     text = "i love you"
     text2voice(text)

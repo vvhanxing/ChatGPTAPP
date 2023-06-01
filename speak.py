@@ -1,12 +1,13 @@
 import os
 import azure.cognitiveservices.speech as speechsdk
 import requests
-def recognize_from_microphone():
+def recognize_from_voice(filename):
     # This example requires environment variables named "SPEECH_KEY" and "SPEECH_REGION"
     speech_config = speechsdk.SpeechConfig(subscription='f7d5f5c932f7444d9a93565ac5da672c', region='eastasia')
     speech_config.speech_recognition_language="en-US"
 
-    audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
+    #audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
+    audio_config = speechsdk.audio.AudioConfig(filename=filename)
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
 
     print("Speak into your microphone.")
@@ -32,9 +33,8 @@ def getGPT():
     url = "http://192.168.43.185:5000/openai/"
 
     headers = {"Content-Type":"application/json"}
-    response = requests.post(url = url,headers=headers,json = {"content":[recognize_from_microphone()]})
+    response = requests.post(url = url,headers=headers,json = {"content":[recognize_from_voice("output.wav")]})
     print(response.text)
     print(response.status_code)
 
 
-getGPT()
