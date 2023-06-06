@@ -17,11 +17,10 @@ import azure.cognitiveservices.speech as speechsdk
 from pydub import AudioSegment
 # This example requires environment variables named "SPEECH_KEY" and "SPEECH_REGION"
 speech_config = speechsdk.SpeechConfig(subscription='f7d5f5c932f7444d9a93565ac5da672c', region='eastasia')
-audio_config = speechsdk.audio.AudioOutputConfig(use_default_speaker=True)
-
+audio_file = './static/output.wav'
+audio_config = speechsdk.audio.AudioOutputConfig(filename=audio_file)
 # The language of the voice that speaks.
 speech_config.speech_synthesis_voice_name='en-US-JennyNeural'
-
 speech_synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
 
 
@@ -29,13 +28,13 @@ speech_synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, au
 def text2voice(text):
     # Get text from the console and synthesize to the default speaker.
 
-
+    print("========1")
     speech_synthesis_result = speech_synthesizer.speak_text_async(text).get()
-
+    print("========2")
     if speech_synthesis_result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
         print("Speech synthesized for text [{}]".format(text))
-
-        audio_file = './static/output.wav'
+        print("========4")
+        
         with open(audio_file, 'wb') as file:
             file.write(speech_synthesis_result.audio_data)
 
@@ -47,7 +46,7 @@ def text2voice(text):
         
         
         print(f'Saved synthesized speech to "{audio_file}"')
-
+        print("========5")
     elif speech_synthesis_result.reason == speechsdk.ResultReason.Canceled:
         cancellation_details = speech_synthesis_result.cancellation_details
         print("Speech synthesis canceled: {}".format(cancellation_details.reason))

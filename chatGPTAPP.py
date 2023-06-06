@@ -33,11 +33,31 @@ def openai():
     #getbdaudio.read_text(gptResponse,1,'audio')
     #getAudio.text2voice(gptResponse)
     print("return string")
-    return  gptResponse.replace("\n","<br>")  
+    return  gptResponse#.replace("<br>","")  
+
+
+@app.route("/copilot/",methods = ["GET","POST"])
+def copilot():
+    j = request.get_json()
+    print()
+    message = {"role": "user", "content": j["content"][0]}
+    url = 'https://semantickernalapi.azurewebsites.net/Chat'
+    data = {
+    "content": j["content"][0]
+    }
+    print('data',data)
+    headers = {"Content-Type": "application/json"}
+    #dic["info"]=  " "*i+"""ChatGPT4 is great,I love openAI !"""
+    response = requests.post(url, json=data,headers= headers)
+    print(response.json())
+    print("return string")
+    content  = response.json()["content"]
+    return  content
+
 
 @app.route('/audio/mp3')
 def stream_mp3():
-    audio_file = 'static\\ioutput.mp3'
+    audio_file = 'static\\music2.mp3'
     return send_file(audio_file, mimetype='audio/mpeg')
 
 
@@ -84,5 +104,6 @@ def upload():
    
 
 if __name__ == '__main__':
-    app.run(host="192.168.43.185",port=5000 ,debug=True)
+    app.run(host="192.168.43.185",port=5000 ,debug=True)  # 172.20.10.7
+    #app.run(host="172.20.10.7",port=5000 ,debug=True) 
 
